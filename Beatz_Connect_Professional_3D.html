@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090d">
+<meta name="description" content="Beatz Connect turns your phone into a touchpad, keyboard and media remote for your Windows PC.">
+<title>Beatz Connect – Use your phone as your PC’s mouse and keyboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#1F1F1F;--panel:rgba(43,43,43,.88);--text:#f3f3f3;--muted:#b2b2b2;--line:#3f3f3f;--accent:#ffb547;--on-accent:#1a1204;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f1f3f6;--panel:rgba(255,255,255,.9);--text:#16181c;--muted:#555b66;--line:#d6dae1;--accent:#b45f06;--on-accent:#fff;color-scheme:light}}
+:root[data-theme="light"]{--bg:#f1f3f6;--panel:rgba(255,255,255,.9);--text:#16181c;--muted:#555b66;--line:#d6dae1;--accent:#b45f06;--on-accent:#fff;color-scheme:light}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.55 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+#bar{position:fixed;top:0;left:0;height:3px;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0);z-index:5}
+main{position:relative;z-index:1}
+.pane{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:72px 24px}
+.pane.r{justify-content:flex-end}
+.pane.top{align-items:flex-start;padding-top:84px}
+.card{max-width:410px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px 26px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hero-t{max-width:760px}
+h1{font-size:clamp(2.3rem,6.5vw,4.4rem);line-height:1.02;font-weight:800;letter-spacing:-.035em;margin:0 0 14px;max-width:13ch}
+h2{font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-.02em;margin:0 0 8px}
+p{margin:0 0 10px;color:var(--muted);max-width:60ch}
+.card p:last-child{margin-bottom:0}
+.scroll{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:3;font-size:.85rem;color:var(--muted);transition:opacity .3s}
+.tag{display:inline-block;font-size:.85rem;font-weight:600;color:var(--accent);margin-bottom:6px}
+ul.f{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:10px}
+ul.f b{display:block}
+ul.f span{color:var(--muted);font-size:.95rem}
+.btn{display:inline-block;margin:8px 10px 0 0;padding:13px 22px;border-radius:12px;background:var(--accent);color:var(--on-accent);font-weight:800;text-decoration:none}
+.btn:hover{filter:brightness(1.08)}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+small{display:block;margin-top:14px;color:var(--muted);font-size:.85rem}
+[hidden]{display:none!important}
+.nav{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:14px;z-index:6;display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.nav a{padding:7px 14px;border-radius:9px;color:var(--muted);text-decoration:none;font-weight:600;font-size:.95rem}
+.nav a[aria-current="page"]{background:var(--accent);color:var(--on-accent)}
+.page{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:92px 22px 64px}
+.page h1{max-width:none;font-size:clamp(2rem,5vw,3.2rem)}
+.page h2{margin-top:40px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin:22px 0 8px}
+.page .card{max-width:none}
+.page .card h2{margin-top:0}
+.page ol{padding-left:22px;color:var(--muted);max-width:68ch}
+.page ol li{margin-bottom:10px;padding-left:4px}
+.page ol b{color:var(--text)}
+.facts{display:grid;grid-template-columns:minmax(130px,210px) 1fr;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);margin:0}
+.facts dt,.facts dd{margin:0;padding:12px 16px;border-bottom:1px solid var(--line)}
+.facts dt{font-weight:600}
+.facts dd{color:var(--muted)}
+.facts dt:last-of-type,.facts dd:last-of-type{border-bottom:0}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:10px;background:var(--panel)}
+summary{cursor:pointer;font-weight:600}
+details p{margin:8px 0 0}
+@media (max-width:760px){.pane,.pane.r{align-items:flex-end;justify-content:center;padding:72px 14px 28px}.pane.top{align-items:flex-start;padding-top:84px}.card{max-width:none;width:100%}.facts{grid-template-columns:1fr}.facts dt{border-bottom:0;padding-bottom:0}}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(640px 420px at 88% 8%,color-mix(in srgb,var(--accent) 20%,transparent),transparent);pointer-events:none;z-index:0}
+.card{transition:border-color .2s}.card:hover{border-color:var(--accent)}
+.mk{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#1F1F1F;color:#f3f3f3;font-size:.8rem;margin-top:14px}
+.mk-bar{display:flex;gap:6px;align-items:center;padding:8px 10px;background:#2B2B2B}
+.mk-bar i{width:9px;height:9px;border-radius:50%;background:#555}
+.mk-bar span{margin-left:6px;color:#b2b2b2}
+.mk-body{display:grid;grid-template-columns:1.5fr 1fr}
+.mk-main{padding:12px}
+.mk-wall{height:64px;border-radius:8px;background:linear-gradient(135deg,#26305a,#143a4a);margin:6px 0}
+.mk-sl{height:6px;border-radius:3px;background:#3b3b3b;margin:6px 0 10px}
+.mk-sl u{display:block;width:45%;height:100%;border-radius:3px;background:#5aa9ff}
+.mk-side{padding:12px;background:#2B2B2B;display:grid;gap:6px;align-content:start}
+.mk-side span{color:#b2b2b2;display:block}
+.ok{color:#7fe0a0}
+.pm{width:170px;margin:14px auto 0;border:6px solid #101010;border-radius:26px;background:#1F1F1F;color:#f3f3f3;padding:12px;font-size:.78rem}
+.pm .pad{height:130px;border-radius:12px;background:#2B2B2B;margin:8px 0;position:relative}
+.pm .pad::after{content:"";position:absolute;left:40%;top:35%;width:20px;height:20px;border-radius:50%;background:#5aa9ff;box-shadow:0 0 0 12px rgba(90,169,255,.25)}
+.pm .row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;text-align:center}
+.pm .row span{background:#2B2B2B;border-radius:8px;padding:6px 0;color:#b2b2b2}
+</style>
+
+<!-- Beatz Connect cinematic upgrade -->
+<style>
+:root{
+  --bg:#07090d;--panel:rgba(13,17,24,.72);--text:#f5f7fb;--muted:#9ba6b6;
+  --line:rgba(255,255,255,.12);--accent:#ffb547;--on-accent:#17100a;
+  color-scheme:dark;scroll-behavior:smooth
+}
+html{background:#07090d}
+body{
+  background:
+    radial-gradient(ellipse at 50% 5%,rgba(255,181,71,.12),transparent 34%),
+    radial-gradient(ellipse at 85% 48%,rgba(44,103,160,.13),transparent 35%),
+    linear-gradient(180deg,#090c12 0%,#06080c 48%,#090c12 100%);
+  color:var(--text);font-size:16px;overflow-x:hidden
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.24;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:linear-gradient(to bottom,black,transparent 88%)
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:4;pointer-events:none;opacity:.11;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")
+}
+#c{filter:saturate(1.12) contrast(1.05);opacity:.98}
+#bar{height:2px;box-shadow:0 0 18px rgba(255,181,71,.75);z-index:8}
+main,.page{z-index:2}
+.pane{min-height:100svh;padding:clamp(78px,10vh,130px) clamp(20px,7vw,110px)}
+.pane.top{padding-top:clamp(110px,16vh,180px)}
+.pane.r{justify-content:flex-end}
+.pane:not(.top){position:relative}
+.pane:not(.top)::before{
+  content:"";position:absolute;left:7vw;right:7vw;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent)
+}
+.hero-t{max-width:850px}
+.hero-t::before{
+  content:"BEATZ CONNECT  /  THE CONTROL LAYER";display:block;margin-bottom:24px;
+  color:var(--accent);font-size:.72rem;font-weight:800;letter-spacing:.22em
+}
+h1{font-size:clamp(3.3rem,9vw,8.6rem);line-height:.91;letter-spacing:-.075em;max-width:10ch;text-wrap:balance}
+.hero-t h1{background:linear-gradient(115deg,#fff 8%,#d7dce4 48%,#ffcf83 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:clamp(1.7rem,3vw,2.5rem);line-height:1.04;letter-spacing:-.045em}
+p{font-size:clamp(1rem,1.35vw,1.13rem);line-height:1.75;color:#aab4c2}
+.card{
+  position:relative;isolation:isolate;overflow:hidden;width:min(100%,470px);max-width:470px;
+  padding:clamp(24px,3vw,38px);border-radius:24px;
+  background:linear-gradient(145deg,rgba(24,30,40,.82),rgba(9,12,18,.72));
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:0 30px 100px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  transform-style:preserve-3d;transition:border-color .35s,box-shadow .35s
+}
+.card::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.8;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(255,181,71,.12),transparent 45%)
+}
+.card:hover{border-color:rgba(255,181,71,.42);box-shadow:0 35px 110px rgba(0,0,0,.5),0 0 35px rgba(255,181,71,.06)}
+.tag{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:18px}
+ul.f{gap:18px;margin-top:22px}
+ul.f li{padding-left:17px;border-left:1px solid rgba(255,181,71,.45)}
+ul.f b{font-size:1rem;margin-bottom:4px}
+ul.f span{font-size:.9rem;line-height:1.6;color:#9ba6b6}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  margin:12px 10px 0 0;padding:14px 22px;border-radius:999px;
+  background:linear-gradient(135deg,#ffd18b,#ffad37);color:#17100a;
+  box-shadow:0 10px 30px rgba(255,181,71,.18);font-weight:800;
+  transition:transform .25s,box-shadow .25s,filter .25s
+}
+.btn::after{content:"↗";font-size:1.05em}
+.btn:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(255,181,71,.28);filter:brightness(1.04)}
+.nav{
+  top:calc(18px + env(safe-area-inset-top,0px));right:clamp(14px,4vw,54px);
+  padding:6px;border-radius:999px;background:rgba(8,11,16,.72);
+  border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(20px)
+}
+.nav a{padding:9px 17px;border-radius:999px;font-size:.82rem}
+.nav a[aria-current="page"]{box-shadow:0 5px 18px rgba(255,181,71,.18)}
+.scroll{
+  bottom:calc(24px + env(safe-area-inset-bottom,0px));font-size:.68rem;
+  letter-spacing:.2em;text-transform:uppercase;color:#c1c8d2
+}
+.scroll::after{content:"";display:block;width:1px;height:30px;margin:10px auto 0;background:linear-gradient(var(--accent),transparent);animation:scrollLine 1.5s ease-in-out infinite}
+@keyframes scrollLine{0%,100%{transform:scaleY(.55);transform-origin:top;opacity:.45}50%{transform:scaleY(1);opacity:1}}
+.mk{border-color:rgba(255,255,255,.13);border-radius:14px;box-shadow:0 20px 55px rgba(0,0,0,.3)}
+.mk-bar,.mk-side{background:#10151e}
+.mk-main{background:#0c1119}
+.pm{box-shadow:0 20px 50px rgba(0,0,0,.45);border-color:#343b47}
+.page{max-width:1100px;padding-top:120px}
+.page h1{font-size:clamp(2.8rem,7vw,5.5rem);letter-spacing:-.07em}
+.page h2{margin-top:48px}
+.page .card{max-width:none}
+.facts{background:rgba(12,16,23,.75);border-color:var(--line);border-radius:18px}
+.facts dt,.facts dd{border-color:rgba(255,255,255,.09)}
+details{background:rgba(12,16,23,.75);border-color:var(--line);border-radius:16px;padding:17px 20px}
+summary{color:#f5f7fb}
+small{color:#8995a5}
+a{transition:color .2s}
+a:focus-visible{outline-offset:5px}
+.reveal{opacity:0;transform:translate3d(0,42px,0) scale(.985);filter:blur(7px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1),filter .9s}
+.reveal.is-visible{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+.pane.r .card.reveal{transform:translate3d(42px,25px,0) scale(.985)}
+.pane.r .card.reveal.is-visible{transform:translate3d(0,0,0) scale(1)}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.hero-cta .btn.secondary{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:#f5f7fb;box-shadow:none}
+.hero-cta .btn.secondary::after{content:"↓"}
+.kicker{display:inline-flex;align-items:center;gap:9px;color:#b6c0ce;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;margin:0 0 20px}
+.kicker::before{content:"";width:7px;height:7px;border-radius:50%;background:#8ce7b0;box-shadow:0 0 14px #8ce7b0}
+@media(max-width:760px){
+  .pane,.pane.r{align-items:flex-end;justify-content:center;padding:70px 16px 44px}
+  .pane.top{align-items:flex-start;padding-top:115px}
+  .hero-t h1{font-size:clamp(3.1rem,16vw,5.2rem)}
+  .card{width:100%;max-width:none;border-radius:21px;padding:24px}
+  .nav{right:12px;top:calc(12px + env(safe-area-inset-top,0px))}
+  .nav a{padding:8px 12px;font-size:.78rem}
+  .scroll{display:none}
+  .page{padding:105px 16px 50px}
+  .g2{grid-template-columns:1fr;min-width:0}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .reveal{opacity:1;transform:none;filter:none}
+}
+</style>
+
+</head>
+<body>
+<div id="bar"></div>
+<canvas id="c" aria-label="3D model of a phone controlling a Windows PC that moves as you scroll"></canvas>
+<nav class="nav" aria-label="Pages"><a id="n-home" href="#">Home</a><a id="n-dl" href="#download">Download</a></nav>
+<div class="scroll" id="hint">Scroll to explore</div>
+<main id="home">
+  <section class="pane top"><div class="hero-t">
+    <h1>Your phone is now your PC’s mouse.</h1>
+    <p>Beatz Connect turns your phone into a touchpad, keyboard and media remote for Windows.</p>
+  </div></section>
+
+  <section class="pane"><div class="card">
+    <span class="tag">Step 1 · Pair</span><h2>Enter one code</h2>
+    <p>Open Beatz Connect on your PC. It shows a 6‑digit code and a QR code. Type or scan it on your phone and the two devices find each other.</p>
+  </div></section>
+
+  <section class="pane r"><div class="card">
+    <span class="tag">Step 2 · Move</span><h2>Same Wi‑Fi? It’s direct.</h2>
+    <p>Drag a finger on the touchpad. Tiny movement packets go straight to your PC over the local network, with no cloud in between.</p>
+  </div></section>
+
+  <section class="pane"><div class="card">
+    <span class="tag">Different network</span><h2>Away from home? Use the relay.</h2>
+    <p>On mobile data, both devices connect out to a cloud relay over a secure port. The relay passes your movements through, so there is nothing to set up on your router.</p>
+  </div></section>
+
+  <section class="pane r"><div class="card">
+    <span class="tag">Step 3 · Control</span><h2>Your PC follows</h2>
+    <p>The pointer moves at the speed you set in the desktop dashboard, which also shows your phone, battery, connection mode and ping.</p>
+  </div></section>
+
+  <section class="pane"><div class="card">
+    <span class="tag">Built for speed</span><h2>Precise and instant</h2>
+    <ul class="f">
+      <li><b>Pointer speed from 1.0× to 3.5×</b><span>Set it once in the desktop app. Your movement is scaled before it reaches the pointer.</span></li>
+      <li><b>Moves like a real mouse</b><span>Movement is sent as small relative steps, so the pointer never jumps.</span></li>
+      <li><b>Sent immediately</b><span>Each tiny packet goes out as it happens instead of waiting in a buffer.</span></li>
+      <li><b>Never freezes the app</b><span>Touch input at 60–120 times a second is handled on its own thread, apart from the window.</span></li>
+    </ul>
+  </div></section>
+
+  <section class="pane r"><div class="card">
+    <span class="tag">On your PC</span><h2>A calm dashboard</h2>
+    <p>The desktop window is a companion, like Phone Link. It shows your phone and the connection, and tucks into the tray when you close it.</p>
+    <div class="slot-dash"></div>
+    <small>Preview with example values</small>
+  </div></section>
+
+  <section class="pane"><div class="card">
+    <h2>Everything in one app</h2>
+    <ul class="f">
+      <li><b>Touchpad and gestures</b><span>Move, click and scroll.</span></li>
+      <li><b>Media controls</b><span>Play, pause, skip, volume.</span></li>
+      <li><b>Runs from the tray</b><span>Close the window; it keeps listening and can start with Windows.</span></li>
+      <li><b>Live status</b><span>See your phone’s name, wallpaper, battery, connection mode, IP address and ping on the PC.</span></li>
+      <li><b>Stays connected</b><span>A check every 15 seconds keeps the relay connection from dropping when idle.</span></li>
+    </ul>
+  </div></section>
+
+  <section class="pane r"><div class="card">
+    <h2>Download Beatz Connect</h2>
+    <p>Install the Windows app first, then the phone app, and pair them with the code.</p>
+    <a class="btn" id="dl-win" target="_blank" rel="noopener">Download for Windows</a><a class="btn" id="dl-and" target="_blank" rel="noopener">Download for Android</a>
+    <small>Windows 10 and 11 · Android phones · <a href="#download" style="color:var(--accent)">Install steps and details</a></small>
+  </div></section>
+</main>
+
+<main class="page" id="dlpage" hidden>
+  <h1>Download Beatz Connect</h1>
+  <p>You need two apps: one on your Windows PC and one on your phone. Install both, then pair them with a code.</p>
+  <div class="g2">
+    <div class="card"><span class="tag">Step 1</span><h2>Windows app</h2>
+      <p>One installer with everything included. It adds Start Menu and Desktop shortcuts and can start quietly in the system tray when Windows starts.</p>
+      <p>Works on Windows 10 and 11.</p>
+      <a class="btn lw" target="_blank" rel="noopener">Download for Windows</a></div>
+    <div class="card"><span class="tag">Step 2</span><h2>Android app</h2>
+      <p>The controller for your phone: touchpad, media buttons and your phone’s details shown on the PC.</p>
+      <p>If Android asks, allow installs from your browser or file manager.</p>
+      <a class="btn la" target="_blank" rel="noopener">Download for Android</a></div>
+  </div>
+
+  <h2>What the apps look like</h2>
+  <div class="g2">
+    <div class="card"><h2>PC dashboard</h2><p>Your phone’s name, wallpaper and battery on the left. Connection state, mode, IP address and ping on the right. A slider sets pointer speed.</p><div class="slot-dash"></div></div>
+    <div class="card"><h2>Phone controller</h2><p>A full touchpad with media buttons underneath. Drag to move, tap to click.</p><div class="slot-phone"></div></div>
+  </div>
+  <p>Previews use example values.</p>
+
+  <h2>Set up in four steps</h2>
+  <ol>
+    <li><b>Install the PC app.</b> Run the installer and finish the wizard. Beatz Connect opens its dashboard and keeps running in the system tray.</li>
+    <li><b>Install the phone app.</b> Open the downloaded file and allow the install.</li>
+    <li><b>Pair.</b> The PC shows a 6‑digit code and a QR code. Type or scan it on your phone.</li>
+    <li><b>Control.</b> Drag on the touchpad. The dashboard shows the status as Connected, with the mode and ping.</li>
+  </ol>
+
+  <h2>Good to know</h2>
+  <dl class="facts">
+    <dt>Install location</dt><dd>C:\Program Files\Beatz Connect</dd>
+    <dt>Start with Windows</dt><dd>Added for your account only. It starts minimized in the system tray.</dd>
+    <dt>Same Wi‑Fi</dt><dd>Your phone connects straight to your PC over the local network.</dd>
+    <dt>Other networks</dt><dd>Both devices connect out to a cloud relay over a secure web connection on port 443, so no router changes are needed.</dd>
+    <dt>Pointer speed</dt><dd>Adjustable from 1.0× to 3.5× in the desktop dashboard.</dd>
+    <dt>Installer file</dt><dd>BeatzConnect_Setup.exe</dd>
+    <dt>Pairing</dt><dd>A unique 6‑digit code or QR code, created on your PC.</dd>
+    <dt>Window</dt><dd>A normal Windows title bar, so minimize, maximize and snap layouts work. Closing it hides the app in the tray.</dd>
+    <dt>Phone details</dt><dd>Your phone’s name, wallpaper and battery level appear on the PC.</dd>
+    <dt>Status panel</dt><dd>Connected, Disconnected or Reconnecting, plus network mode, IP address and ping in milliseconds.</dd>
+    <dt>Built with</dt><dd>Qt 6 (C++) desktop app, Flutter phone app, Node.js relay server.</dd>
+  </dl>
+
+  <h2>Questions</h2>
+  <details><summary>Windows asked about the firewall. What should I do?</summary><p>Allow Beatz Connect on private networks. This lets your phone reach your PC on the same Wi‑Fi.</p></details>
+  <details><summary>My phone can’t find my PC.</summary><p>Check that the PC app is running in the tray and the code matches. If your phone is on mobile data or a different Wi‑Fi, use the cloud relay mode instead of the local one.</p></details>
+  <details><summary>Does my movement go through the cloud?</summary><p>Only on different networks. Then your movements pass through the relay server to reach your PC. On the same Wi‑Fi they go directly.</p></details>
+  <details><summary>How do I remove it?</summary><p>Uninstall it like any app from Windows Settings, in Apps.</p></details>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// EDIT THESE: point to your real installer and APK links
+const LINKS={windows:"https://github.com/beatz-maaraz/beatz-connect/releases/latest",android:"https://github.com/beatz-maaraz/beatz-connect/releases/latest"};
+document.getElementById("dl-win").href=LINKS.windows;
+document.getElementById("dl-and").href=LINKS.android;
+document.querySelectorAll(".lw").forEach(a=>a.href=LINKS.windows);
+document.querySelectorAll(".la").forEach(a=>a.href=LINKS.android);
+
+const T=THREE,cv=document.getElementById("c");
+const R=new T.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+R.setPixelRatio(Math.min(devicePixelRatio,1.75));
+R.outputColorSpace=T.SRGBColorSpace;
+R.toneMapping=T.ACESFilmicToneMapping;
+R.toneMappingExposure=1.12;
+const S=new T.Scene(),C=new T.PerspectiveCamera(36,1,.1,60);
+S.add(new T.HemisphereLight(0xdfe8ff,0x111722,1.15));
+const dl=new T.DirectionalLight(0xffffff,1.35);dl.position.set(3,5,6);S.add(dl);const rim=new T.DirectionalLight(0x8fb8ff,1.15);rim.position.set(-5,2,-4);S.add(rim);
+const mkTex=(w,h)=>{const c=document.createElement("canvas");c.width=w;c.height=h;return{x:c.getContext("2d"),t:new T.CanvasTexture(c)}};
+const PT=mkTex(256,512),MT=mkTex(640,400);
+
+const rrShape=(w,h,r)=>{const s=new T.Shape(),x=-w/2,y=-h/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);return s};
+const slab=(w,h,r,d,bv,mat)=>{const g=new T.ExtrudeGeometry(rrShape(w,h,r),{depth:d,bevelEnabled:true,bevelThickness:bv,bevelSize:bv,bevelSegments:4,curveSegments:14});g.translate(0,0,-d/2);return new T.Mesh(g,mat)};
+const face=(w,h,r,mat,z)=>{const g=new T.ShapeGeometry(rrShape(w,h,r),14),p=g.attributes.position,uv=g.attributes.uv;for(let i=0;i<p.count;i++)uv.setXY(i,p.getX(i)/w+.5,p.getY(i)/h+.5);const m=new T.Mesh(g,mat);m.position.z=z;return m};
+const alu=new T.MeshStandardMaterial({color:0xc2c9d3,metalness:.92,roughness:.2});
+const frameM=new T.MeshStandardMaterial({color:0x707987,metalness:.94,roughness:.19});
+const dark=new T.MeshPhysicalMaterial({color:0x10151d,roughness:.24,metalness:.48,clearcoat:.85,clearcoatRoughness:.16});
+const black=new T.MeshBasicMaterial({color:0x040405});
+
+// Phone: metal frame, black glass, punch-hole camera, side buttons
+const phone=new T.Group();
+phone.add(slab(1.1,2.28,.24,.1,.035,frameM));
+phone.add(face(1.12,2.3,.2,black,.088));
+phone.add(face(1.04,2.2,.16,new T.MeshBasicMaterial({map:PT.t}),.09));
+const hole=new T.Mesh(new T.CircleGeometry(.032,20),black);hole.position.set(0,1.0,.092);phone.add(hole);
+[[.61,.45,.3],[-.61,.62,.2],[-.61,.3,.2]].forEach(([x,y,h])=>{const b=new T.Mesh(new T.BoxGeometry(.03,h,.05),frameM);b.position.set(x,y,0);phone.add(b)});
+
+// PC: slim-bezel monitor on a stand, with keyboard and mouse
+const pc=new T.Group();
+pc.add(slab(3.36,2.06,.1,.06,.02,dark));
+pc.add(face(3.4,2.1,.08,black,.052));
+pc.add(face(3.24,1.96,.04,new T.MeshBasicMaterial({map:MT.t}),.054));
+const neck=new T.Mesh(new T.BoxGeometry(.24,.9,.07),alu);neck.position.set(0,-1.5,-.06);pc.add(neck);
+const base=new T.Mesh(new T.CylinderGeometry(.8,.85,.05,48),alu);base.scale.z=.6;base.position.set(0,-1.93,.02);pc.add(base);
+const kbC=document.createElement("canvas");kbC.width=512;kbC.height=170;
+{const k=kbC.getContext("2d");k.fillStyle="#26272b";k.fillRect(0,0,512,170);k.fillStyle="#3a3c42";
+ for(let r=0;r<5;r++){const n=r===4?1:13-(r%2);for(let c=0;c<n;c++){const w=r===4?330:34,x0=r===4?90:14+c*37+(r%2)*10;k.fillRect(x0,12+r*31,w,25)}}}
+const kb=new T.Group();
+const kbBody=slab(2.1,.7,.05,.04,.012,dark);kbBody.rotation.x=-Math.PI/2;kb.add(kbBody);
+const kbTop=new T.Mesh(new T.PlaneGeometry(2.0,.62),new T.MeshBasicMaterial({map:new T.CanvasTexture(kbC)}));kbTop.rotation.x=-Math.PI/2;kbTop.position.y=.04;kb.add(kbTop);
+kb.position.set(-.1,-1.93,1.3);pc.add(kb);
+const mouse=new T.Mesh(new T.SphereGeometry(1,24,16),dark);mouse.scale.set(.15,.08,.25);pc.add(mouse);
+const relay=new T.Mesh(new T.IcosahedronGeometry(.6,1),new T.MeshBasicMaterial({color:0xffb547,wireframe:true}));
+relay.position.set(0,2.4,-1);
+S.add(phone,pc,relay);
+S.add(phone,pc,relay);
+
+// PREMIUM PRODUCT-STAGE ENVIRONMENT
+// Procedural studio floor, concentric halo rings, ambient particles and device glows.
+const stage = new T.Group();
+S.add(stage);
+
+// Large dark reflective floor.
+const floorMat = new T.MeshStandardMaterial({
+  color:0x0a1019, metalness:.72, roughness:.28,
+  transparent:true, opacity:.92
+});
+const floor = new T.Mesh(new T.CircleGeometry(13,96), floorMat);
+floor.rotation.x = -Math.PI/2;
+floor.position.y = -2.35;
+stage.add(floor);
+
+// Subtle circular product-stage rings.
+const ringMat = new T.MeshBasicMaterial({color:0xffb547,transparent:true,opacity:.22});
+const ringMatCool = new T.MeshBasicMaterial({color:0x6da9e8,transparent:true,opacity:.16});
+const stageRings = [];
+[3.2,4.4,5.8].forEach((r,i)=>{
+  const ring = new T.Mesh(new T.TorusGeometry(r,.008,8,128),i===1?ringMatCool:ringMat);
+  ring.rotation.x=Math.PI/2;
+  ring.position.y=-2.31+i*.008;
+  stage.add(ring);stageRings.push(ring);
+});
+
+// Soft point lights create a studio-lit product silhouette.
+const amberPoint = new T.PointLight(0xffb45c,1.7,18,2);
+amberPoint.position.set(-4,3,4);S.add(amberPoint);
+const bluePoint = new T.PointLight(0x548ed0,1.5,20,2);
+bluePoint.position.set(4,1,-4);S.add(bluePoint);
+const frontPoint = new T.PointLight(0xffffff,.65,16,2);
+frontPoint.position.set(0,4,7);S.add(frontPoint);
+
+// Floating micro-particles in the scene.
+const particleCount = innerWidth < 700 ? 90 : 180;
+const particlePositions = new Float32Array(particleCount*3);
+const particleSeeds = [];
+for(let i=0;i<particleCount;i++){
+  const radius=4+Math.random()*10,angle=Math.random()*Math.PI*2;
+  particlePositions[i*3]=Math.cos(angle)*radius;
+  particlePositions[i*3+1]=(Math.random()-.2)*8;
+  particlePositions[i*3+2]=Math.sin(angle)*radius-2;
+  particleSeeds.push({phase:Math.random()*Math.PI*2,speed:.25+Math.random()*.55});
+}
+const particleGeo=new T.BufferGeometry();
+particleGeo.setAttribute("position",new T.BufferAttribute(particlePositions,3));
+const particleMat=new T.PointsMaterial({
+  color:0xffd69a,size:.025,transparent:true,opacity:.52,
+  sizeAttenuation:true,depthWrite:false
+});
+const particles=new T.Points(particleGeo,particleMat);
+S.add(particles);
+
+// Elegant halo behind the monitor.
+const halo = new T.Mesh(
+  new T.TorusGeometry(2.7,.012,8,160),
+  new T.MeshBasicMaterial({color:0x8bbcff,transparent:true,opacity:.18})
+);
+halo.position.set(0,1.0,-2.1);
+S.add(halo);
+
+// Fine camera-facing glow disc, kept behind the product.
+const glowCanvas=document.createElement("canvas");
+glowCanvas.width=glowCanvas.height=256;
+const gx=glowCanvas.getContext("2d");
+const grad=gx.createRadialGradient(128,128,5,128,128,128);
+grad.addColorStop(0,"rgba(255,181,71,.22)");
+grad.addColorStop(.42,"rgba(65,113,174,.09)");
+grad.addColorStop(1,"rgba(5,8,14,0)");
+gx.fillStyle=grad;gx.fillRect(0,0,256,256);
+const glow=new T.Mesh(
+  new T.PlaneGeometry(12,12),
+  new T.MeshBasicMaterial({map:new T.CanvasTexture(glowCanvas),transparent:true,depthWrite:false})
+);
+glow.position.set(0,1,-4.5);
+S.add(glow);
+
+// Small glass-like floating connection nodes.
+const nodeMat=new T.MeshPhysicalMaterial({
+  color:0x182333,metalness:.48,roughness:.12,
+  clearcoat:1,clearcoatRoughness:.08,transparent:true,opacity:.92
+});
+const nodes=[];
+[[-2.8,1.4,.2],[2.9,1.9,-.5],[0,3.0,-1.5]].forEach((p,i)=>{
+  const node=new T.Mesh(new T.SphereGeometry(.11,24,24),nodeMat.clone());
+  node.position.set(...p);node.material.emissive=new T.Color(i===1?0x102a4b:0x3a2108);
+  node.material.emissiveIntensity=.45;S.add(node);nodes.push(node);
+});
+
+
+const A=new T.Vector3(),B=new T.Vector3(),Rl=relay.position;
+let path=[A,B],line=null,mode="lan";
+const lineMat=new T.LineBasicMaterial({color:0xffb547,transparent:true,opacity:.5});
+function setPath(m){
+  mode=m;path=m==="lan"?[A,B]:[A,Rl,B];
+  if(line){S.remove(line);line.geometry.dispose()}
+  line=new T.Line(new T.BufferGeometry().setFromPoints(path),lineMat);S.add(line);
+}
+setPath("lan");
+const dots=[];
+for(let i=0;i<14;i++){const m=new T.Mesh(new T.SphereGeometry(.07,10,10),new T.MeshBasicMaterial({color:0xfff1d0,transparent:true}));S.add(m);dots.push(m)}
+const along=(t,o)=>{const n=path.length-1,f=t*n,i=Math.min(Math.floor(f),n-1);return o.lerpVectors(path[i],path[i+1],f-i)};
+
+// Scroll keyframes: [camX,camY,camZ, lookX,lookY,lookZ, phoneRotY, pcRotY, relay, flow, pair, spread]
+const K=[
+ [0,.6,11.5, 0,1.5,0,  .35,-.3, 0,1,0, 1],
+ [-3.9,.1,5, -3.5,-.1,0, 0,-.4, 0,0,1, 1],
+ [0,1.1,9.5, 0,0,0,   .25,-.25,0,1,0, 1],
+ [0,2.6,10.5, 0,1.1,-.4, .3,-.3, 1,1,0, 1],
+ [3.4,.5,5.4, 3.4,.3,0, .7,0,   0,1,0, 1],
+ [0,.5,7.5, 0,0,0,    .15,-.15,0,1,0,.8],
+ [-1.4,.4,8.5, -1.4,0,0, .5,-.15, 0,1,0, 1],
+ [0,3.2,12.5, 0,0,0,  1.1,-1.1,0,0,0, 1.15],
+ [0,.3,9, 0,0,0,      .2,-.2,  0,1,0, .6]
+];
+const cur=K[0].slice(),tgt=K[0].slice();
+const panes=[...document.querySelectorAll(".pane")],N=panes.length;
+let prog=0;
+function readScroll(){
+  if(view!=="home")return;
+  const vh=innerHeight;let s=0;
+  panes.forEach(p=>{const r=p.getBoundingClientRect();s+=Math.max(0,Math.min(1,(vh*.5-r.top)/r.height))});
+  s=Math.max(0,Math.min(N-1,s-.5));
+  const i=Math.min(Math.floor(s),N-2),f=s-i,e=f*f*(3-2*f);
+  for(let k=0;k<12;k++)tgt[k]=K[i][k]+(K[i+1][k]-K[i][k])*e;
+  const max=document.documentElement.scrollHeight-vh;
+  prog=max>0?scrollY/max:0;
+  document.getElementById("bar").style.transform="scaleX("+prog+")";
+  document.getElementById("hint").style.opacity=scrollY>40?0:1;
+}
+addEventListener("scroll",readScroll,{passive:true});
+let mx=0,my=0;
+addEventListener("pointermove",e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+
+function resize(){const w=innerWidth,h=innerHeight;R.setSize(w,h,false);C.aspect=w/h;C.updateProjectionMatrix();readScroll()}
+addEventListener("resize",resize);
+
+const rr=(x,a,b,w,h,r)=>{x.beginPath();x.roundRect?x.roundRect(a,b,w,h,r):x.rect(a,b,w,h)};
+function drawPhone(u,v,pair){
+  const x=PT.x;x.globalAlpha=1;x.fillStyle="#1F1F1F";x.fillRect(0,0,256,512);
+  x.fillStyle="#f3f3f3";x.font="600 20px sans-serif";x.fillText("Beatz Connect",20,40);
+  x.globalAlpha=1-pair;
+  x.fillStyle="#2B2B2B";rr(x,16,70,224,300,18);x.fill();
+  const fx=36+184*u,fy=90+260*v;
+  x.fillStyle="rgba(255,181,71,.25)";x.beginPath();x.arc(fx,fy,34,0,7);x.fill();
+  x.fillStyle="#ffb547";x.beginPath();x.arc(fx,fy,14,0,7);x.fill();
+  x.fillStyle="#2B2B2B";for(let i=0;i<3;i++){rr(x,16+i*76,392,70,64,14);x.fill()}
+  x.fillStyle="#a9a9a9";x.font="16px sans-serif";["Prev","Play","Next"].forEach((s,i)=>x.fillText(s,34+i*76,432));
+  x.globalAlpha=pair;
+  x.fillStyle="#a9a9a9";x.font="18px sans-serif";x.fillText("Pairing code",20,130);
+  x.fillStyle="#ffb547";x.font="800 44px sans-serif";x.fillText("482 913",20,200);
+  x.fillStyle="#2B2B2B";rr(x,20,240,216,56,14);x.fill();
+  x.fillStyle="#f3f3f3";x.font="600 20px sans-serif";x.fillText("Connect",84,276);
+  x.globalAlpha=1;PT.t.needsUpdate=true;
+}
+function drawPC(u,v){
+  const x=MT.x,g=x.createLinearGradient(0,0,640,400);g.addColorStop(0,"#26305a");g.addColorStop(1,"#143a4a");
+  x.fillStyle=g;x.fillRect(0,0,640,400);
+  x.fillStyle="#1F1F1F";rr(x,60,40,520,270,14);x.fill();
+  x.fillStyle="#2B2B2B";x.fillRect(60,40,170,270);
+  x.fillStyle="#f3f3f3";x.font="600 20px sans-serif";x.fillText("Phone",76,76);
+  x.fillStyle="#7fe0a0";x.font="16px sans-serif";x.fillText("● Connected",76,106);
+  x.fillStyle="#a9a9a9";x.fillText(mode==="lan"?"Local Wi‑Fi":"Cloud relay",76,132);
+  x.fillText("Pointer speed",250,90);
+  x.fillStyle="#3b3b3b";rr(x,250,104,280,8,4);x.fill();
+  x.fillStyle="#ffb547";rr(x,250,104,130,8,4);x.fill();
+  x.fillStyle="rgba(255,255,255,.12)";x.fillRect(0,360,640,40);
+  const cx=60+520*u,cy=40+320*v;
+  x.fillStyle="#fff";x.strokeStyle="#000";x.lineWidth=1.5;x.beginPath();
+  x.moveTo(cx,cy);x.lineTo(cx,cy+22);x.lineTo(cx+6,cy+17);x.lineTo(cx+11,cy+28);x.lineTo(cx+15,cy+26);x.lineTo(cx+10,cy+16);x.lineTo(cx+18,cy+16);x.closePath();x.fill();x.stroke();
+  MT.t.needsUpdate=true;
+}
+const fu=t=>.5+.42*Math.sin(t*1.3),fv=t=>.5+.4*Math.sin(t*1.9+1);
+
+const still=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const tmp=new T.Vector3(),look=new T.Vector3(),clock=new T.Clock();
+function frame(){
+  if(view!=="home"){requestAnimationFrame(frame);return}
+  
+const t=clock.getElapsedTime(),d=still?1:.09;
+  // Atmospheric movement stays subtle so the product remains the hero.
+  stage.rotation.y=still?0:Math.sin(t*.08)*.025;
+  halo.rotation.z=still?0:t*.035;
+  halo.material.opacity=.12+.07*(.5+.5*Math.sin(t*.7));
+  amberPoint.intensity=1.45+.25*Math.sin(t*.8);
+  bluePoint.intensity=1.25+.22*Math.sin(t*.65+1.2);
+  nodes.forEach((node,i)=>{
+    node.position.y=[1.4,1.9,3.0][i]+(still?0:Math.sin(t*.8+i*1.7)*.12);
+    node.rotation.y=t*.25+i;
+  });
+  const pp=particleGeo.attributes.position;
+  if(!still){
+    for(let i=0;i<particleCount;i++){
+      const seed=particleSeeds[i],base=particlePositions[i*3+1];
+      pp.array[i*3+1]=base+Math.sin(t*seed.speed+seed.phase)*.11;
+    }
+    pp.needsUpdate=true;
+  }
+
+  for(let k=0;k<12;k++)cur[k]+=(tgt[k]-cur[k])*d;
+  C.position.set(cur[0]+(still?0:mx*.6),cur[1]+(still?0:-my*.4),cur[2]);
+  look.set(cur[3],cur[4],cur[5]);C.lookAt(look);
+  const sp=cur[11];
+  phone.position.set(-3.5*sp,-.1+(still?0:Math.sin(t*.8)*.06),0);phone.rotation.y=cur[6];
+  pc.position.set(3.4*sp,.3,0);pc.rotation.y=cur[7];mouse.position.set(1.55+(fu(t-.2)-.5)*.35,-1.87,1.3+(fv(t-.2)-.5)*.25);
+  A.set(phone.position.x,-.1,.3);B.set(pc.position.x,.3,.3);
+  const wanWant=cur[8]>.5?"wan":"lan";if(wanWant!==mode)setPath(wanWant);
+  relay.scale.setScalar(Math.max(.001,cur[8]));relay.rotation.y=t*.6;relay.rotation.x=t*.3;
+  line.geometry.setFromPoints(path);lineMat.opacity=.5*Math.max(.15,cur[9]);
+  dots.forEach((m,i)=>{along((t*.45+i/dots.length)%1,tmp);m.position.copy(tmp);m.material.opacity=cur[9]});
+  drawPhone(fu(t),fv(t),cur[10]);drawPC(fu(t-.2),fv(t-.2));
+  R.render(S,C);requestAnimationFrame(frame);
+}
+const DASH='<div class="mk"><div class="mk-bar"><i></i><i></i><i></i><span>Beatz Connect</span></div><div class="mk-body"><div class="mk-main"><b>Your phone</b><div class="mk-wall"></div>Battery 82%<br>Pointer speed<div class="mk-sl"><u></u></div></div><div class="mk-side"><b class="ok">● Connected</b><span>Mode: Local Wi‑Fi</span><span>IP: 192.168.1.24</span><span>Ping: 12 ms</span></div></div></div>';
+const PHONE='<div class="pm"><b>Beatz Connect</b><div class="pad"></div><div class="row"><span>Prev</span><span>Play</span><span>Next</span></div></div>';
+document.querySelectorAll(".slot-dash").forEach(e=>e.innerHTML=DASH);
+document.querySelectorAll(".slot-phone").forEach(e=>e.innerHTML=PHONE);
+let view="home";
+function route(){
+  view=location.hash==="#download"?"download":"home";
+  const h=view==="home";
+  document.getElementById("home").hidden=!h;
+  document.getElementById("dlpage").hidden=h;
+  cv.style.display=h?"block":"none";
+  document.getElementById("bar").style.display=h?"":"none";
+  document.getElementById("hint").style.display=h?"":"none";
+  document.getElementById("n-home").setAttribute("aria-current",h?"page":"false");
+  document.getElementById("n-dl").setAttribute("aria-current",h?"false":"page");
+  document.title=h?"Beatz Connect – Use your phone as your PC’s mouse and keyboard":"Download Beatz Connect";
+  scrollTo(0,0);if(h)readScroll();
+}
+addEventListener("hashchange",route);
+route();resize();frame();
+</script>
+
+<script>
+/* Cinematic UI layer: reveal choreography, magnetic card lighting and navigation state. */
+(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const home = document.getElementById('home');
+  const hero = home && home.querySelector('.hero-t');
+  if (hero && !hero.querySelector('.hero-cta')) {
+    const cta = document.createElement('div');
+    cta.className = 'hero-cta';
+    cta.innerHTML = '<a class="btn" href="#download">Get Beatz Connect</a><a class="btn secondary" href="#experience">Explore the experience</a>';
+    hero.appendChild(cta);
+  }
+  const panes = [...document.querySelectorAll('#home .pane')];
+  panes.forEach((pane, i) => {
+    const card = pane.querySelector('.card');
+    if (card) {
+      card.classList.add('reveal');
+      card.style.transitionDelay = reduce ? '0ms' : '80ms';
+      if (!card.querySelector('.kicker')) {
+        const kicker = document.createElement('div');
+        kicker.className = 'kicker';
+        kicker.textContent = i === 0 ? 'Your devices. One connection.' : 'Designed for seamless control';
+        card.insertBefore(kicker, card.firstChild);
+      }
+    }
+  });
+  const heroPane = panes[0];
+  if (heroPane) heroPane.id = 'experience';
+
+  const revealTargets = [...document.querySelectorAll('.reveal')];
+  if ('IntersectionObserver' in window && !reduce) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.16, rootMargin: '0px 0px -8% 0px'});
+    revealTargets.forEach(el => observer.observe(el));
+  } else revealTargets.forEach(el => el.classList.add('is-visible'));
+
+  if (!reduce) {
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('pointermove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', `${e.clientX-r.left}px`);
+        card.style.setProperty('--my', `${e.clientY-r.top}px`);
+      }, {passive:true});
+    });
+  }
+
+  const links = [...document.querySelectorAll('.nav a')];
+  const updateNav = () => {
+    const isDownload = location.hash === '#download';
+    links.forEach(a => {
+      const active = (a.id === 'n-dl') === isDownload;
+      a.setAttribute('aria-current', active ? 'page' : 'false');
+    });
+  };
+  addEventListener('hashchange', updateNav);
+  updateNav();
+
+  // A subtle scroll-linked depth response that complements the Three.js camera choreography.
+  let scheduled = false;
+  addEventListener('scroll', () => {
+    if (scheduled || reduce) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      const y = Math.min(scrollY / Math.max(1, innerHeight), 1);
+      document.documentElement.style.setProperty('--scroll-depth', y.toFixed(3));
+      scheduled = false;
+    });
+  }, {passive:true});
+})();
+</script>
+
+</body>
+</html>
