@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Scene3D from './components/Scene3D';
 import Navbar from './components/Navbar';
 import ProgressBar from './components/ProgressBar';
@@ -82,6 +83,7 @@ export default function App() {
           <DownloadView />
         )}
       </div>
+      <SpeedInsights />
     </div>
   );
 }
